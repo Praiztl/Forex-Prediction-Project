@@ -1,0 +1,59 @@
+---
+title: "FINAL PROJECT"
+author: "Group 2"
+date: "3/6/2022"
+output: html_document
+output: pdf_document
+output: word_document
+---
+
+
+```{r}
+getwd()
+
+EUR_USD_dataset = read.csv("Forex Dataset.csv") # historical EUR/USD dataset
+```
+```{r}
+library(dplyr) # A grammar library for data manipulation
+EUR_USD_dataset = EUR_USD_dataset %>% 
+  rename(
+    TICKVOLUME = TICKVOL,
+    VOLUME = VOL
+    )
+View(EUR_USD_dataset)
+```
+* 1.01. Check for missing values (NA's) in the records using the summary function.
+* 1.02. Use DataExplorer packages to further analyze records.
+```{r}
+summary(EUR_USD_dataset)
+library(DataExplorer) # automate visual exploration of data and treatment
+plot_intro(EUR_USD_dataset)
+plot_missing(EUR_USD_dataset)
+```
+```{r}
+# Function to visualize histogram and box plot of numerical variables using ggplot
+ 
+library(ggplot2) # For graphs and visualizations
+library(gridExtra) # To plot multiple ggplot graphs in a grid
+
+plot_histogram_n_boxplot = function(variable, variableNameString, binw){
+  h = ggplot(data = EUR_USD_dataset, aes(x= variable))+
+    labs(x = variableNameString,y ='count')+
+    geom_histogram(fill = 'dark green',col = 'white',binwidth = binw)+
+    geom_vline(aes(xintercept = mean(variable)),color="red", linetype="dashed", size=1)
+    
+  b = ggplot(data = EUR_USD_dataset, aes('',variable))+ 
+    geom_boxplot(outlier.colour = 'blue',col = 'red',outlier.shape = 19)+
+    labs(x = '',y = variableNameString)+ coord_flip()
+  grid.arrange(h,b,ncol = 1)
+}
+```
+* 1.24. Histogram and boxplot visualizations for the Opening price
+
+```{r}
+summary(EUR_USD_dataset$OPEN)
+plot_histogram_n_boxplot(EUR_USD_dataset$OPEN, 'OPEN', 1)
+```
+* Median opening price is within opening price 1.10 and 1.15 
+* Distribution appears left-skewed.
+
